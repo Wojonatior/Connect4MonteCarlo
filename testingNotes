@@ -1,0 +1,9 @@
+Validate that the move is within the range of the board aka 1-7
+Validate that the move isn't in a column that that's full
+Validate that the player will always pick a move that wins
+Validate that the player will always block a winning move, assuming there's not a winning move
+Validate the player can parse the board state
+Validate the player can determine winning states
+Validate the player can distinguish pieces
+Validate that the player knows what a legal board looks like
+  eg. no floating pieces

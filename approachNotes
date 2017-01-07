@@ -1,0 +1,10 @@
+Generate a lot of the earlier moves, and use heruistics to pick the categorically best one.
+
+Use monteCarlo to analyze possible solutions
+
+Checking for a win
+  Count in 4 directions
+  N-S
+  E-W
+  NE-SW
+  SE-NW
