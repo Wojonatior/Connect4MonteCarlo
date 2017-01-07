@@ -1,4 +1,4 @@
-import sys, argparse
+import sys, argparse, ast
 
 def main(argv):
     parser = argparse.ArgumentParser()
@@ -6,9 +6,11 @@ def main(argv):
     parser.add_argument("-p")
     parser.add_argument("-t")
     pargs = vars(parser.parse_args())
-    board, player, msTime = pargs["b"], pargs["p"], pargs["t"]
+    board, player, msTime = ast.literal_eval(pargs["b"]), 1 if pargs["p"] == "player-one" else 2, int(pargs["t"])
     print("--------------------------------------------------------------")
     print(board)
+    print(type(board))
+    print(type(board[1]))
     print(player)
     print(msTime)
     print("--------------------------------------------------------------")
