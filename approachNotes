@@ -1,6 +1,13 @@
 Generate a lot of the earlier moves, and use heruistics to pick the categorically best one.
 
 Use monteCarlo to analyze possible solutions
+Pre-generate best moves and look them up in a hash
+  convert game state into a hash
+    2 bits per coordinate
+    42 coordinates
+    84 bits
+    /4 for each hexidecimal "digit"
+    21 hex digits can represent the game state
 
 Checking for a win
   Count in 4 directions
