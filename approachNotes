@@ -1,3 +1,11 @@
+Assumptions:
+Board is 7x6
+I will never be provided an invalid game state
+  Eg. Floating Pieces
+  Pieces in an unpossible order
+  1st player being more than one piece ahead of the second player
+  Both players winning
+
 Generate a lot of the earlier moves, and use heruistics to pick the categorically best one.
 
 Use monteCarlo to analyze possible solutions
