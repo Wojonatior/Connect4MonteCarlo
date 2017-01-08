@@ -17,4 +17,7 @@ def main(argv):
     sys.exit(4)
 
 if __name__ == "__main__":
+    print(sys.argv)
     main(sys.argv)
+
+    
