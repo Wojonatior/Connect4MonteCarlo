@@ -15,5 +15,23 @@ def test_find_horizontal_winner():
     assert giveMeAMove.findWin(horizontalWinBoard) == 1
 
 def test_find_vertical_winner():
-    horizontalWinBoard = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,1],[0,0,0,0,0,2,1],[0,0,0,0,0,2,1],[0,0,0,0,0,2,1]]
-    assert giveMeAMove.findWin(horizontalWinBoard) == 1
+    verticalWinBoard = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,1],[0,0,0,0,0,2,1],[0,0,0,0,0,2,1],[0,0,0,0,0,2,1]]
+    assert giveMeAMove.findWin(verticalWinBoard) == 1
+
+def test_find_right_diag_winner():
+    rDiagWinBoard =   [[0,0,0,0,0,0,0]
+                      ,[0,0,0,0,0,0,0]
+                      ,[0,0,0,1,0,0,0]
+                      ,[0,0,1,2,0,0,0]
+                      ,[0,1,2,2,0,0,0]
+                      ,[1,2,2,2,0,0,0]]
+    assert giveMeAMove.findWin(rDiagWinBoard) == 1
+
+def test_find_left_diag_winner():
+    lDiagWinBoard =   [[0,0,0,0,0,0,0]
+                      ,[0,0,0,0,0,0,0]
+                      ,[0,0,0,1,0,0,0]
+                      ,[0,0,0,2,1,0,0]
+                      ,[0,0,0,2,2,1,0]
+                      ,[0,0,0,2,2,2,1]]
+    assert giveMeAMove.findWin(lDiagWinBoard) == 1

@@ -16,16 +16,38 @@ def debug_output(valuesToPrint):
     print(*valuesToPrint, sep='\n')
     print("----------------------------------------------------------------------------------------------------------------------------")
 
-#retuns the player number if the board contains a winning player, 0 if no winner
+#returns the player number if the board contains a winning player, 0 if no winner
 def findWin(board):
     height = 6
     width = 7
-    # Checking for vertical 
+    # Checking for Horizontal
     for y in range(height):
         for x in range(width-3):
             if board[y][x:x+4].count(1) == 4:
                 return 1
             if board[y][x:x+4].count(2) == 4:
+                return 2
+
+    # Checking for Vertical
+    for x in range(width):
+        for y in range(height-3):
+            if board[y][x] == 1 and board[y+1][x] == 1 and board[y+2][x] == 1 and board[y+3][x] == 1:
+                return 1
+            if board[y][x] == 2 and board[y+1][x] == 2 and board[y+2][x] == 2 and board[y+3][x] == 2:
+                return 2
+    # Checking for Right Diagonal
+    for y in range(height-1, height-3, -1):
+        for x in range(width-3):
+            if board[y][x] == 1 and board[y-1][x+1] == 1 and board[y-2][x+2] == 1 and board[y-3][x+3] == 1:
+                return 1
+            if board[y][x] == 2 and board[y-1][x+1] == 2 and board[y-2][x+2] == 2 and board[y-3][x+3] == 2:
+                return 2
+    # Checking for Left Diagonal
+    for y in range(height-1, height-3, -1):
+        for x in range(width-1, width-3, -1):
+            if board[y][x] == 1 and board[y-1][x-1] == 1 and board[y-2][x-2] == 1 and board[y-3][x-3] == 1:
+                return 1
+            if board[y][x] == 2 and board[y-1][x-1] == 2 and board[y-2][x-2] == 2 and board[y-3][x-3] == 2:
                 return 2
     return 0
 
