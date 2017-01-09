@@ -14,21 +14,25 @@ class MonteCarloAI(object):
         self.legalMoves = findLegalMoves(self.board)
         self.winCounter = {}
         self.playCounter = {}
-        self.plays = {}
 
     def calculate_best_move(self):
-        legal = findLegalMoves(self.board)
         #Bail out early here
         
         simulatedGames = 0
         move_timeout = Timer(self.timeout, self.execute_best_move)
         move_timeout.start()
 
+        # for move in self.legalMoves:
+            # strBoard = str(make_move(self.board, move, self.aiPlayer))
+            # self.playCounter[strBoard] = 0
+            # self.winCounter[strBoard] = 0
+
+
         while True:
             self.simulate_one_game(self.board)
             simulatedGames += 1
-            if simulatedGames == self.numGames:
-                self.execute_best_move()
+            # if simulatedGames == self.numGames:
+                # self.execute_best_move()
 
 
     def simulate_one_game(self, board):
@@ -38,6 +42,8 @@ class MonteCarloAI(object):
         noNewNodeAdded = True
         movingPlayer = playerToOptimize
         winningPlayer = 0
+        numMovesMade = 0
+
 
         # Maximum number of moves is 42, so just play util there aren't moves left
         while not winningPlayer:
@@ -46,7 +52,7 @@ class MonteCarloAI(object):
             simulatedBoard = make_move(simulatedBoard, pendingMove, movingPlayer)
             strBoard = str(simulatedBoard)
 
-            if noNewNodeAdded and strBoard not in self.playCounter:
+            if noNewNodeAdded and not (strBoard in self.playCounter):
                 noNewNodeAdded = False
                 self.playCounter[strBoard] = 0
                 self.winCounter[strBoard] = 0
@@ -57,8 +63,7 @@ class MonteCarloAI(object):
             winningPlayer = findWin(simulatedBoard)
         
         
-        #TODO Check for non-strings being put into dicts and sets
-        #Aggregate the results of the game into the 
+        #Aggregate the results of the game into the playCounter and winCounter
         for boardString in visitedBoards:
             if boardString not in self.playCounter:
                 continue
@@ -69,15 +74,16 @@ class MonteCarloAI(object):
 
     def execute_best_move(self):
         # Moves are in the form of (colToPlay, newBoardState)
-        moves_to_consider = [(play, str(make_move(self.board, play, self.aiPlayer))) for play in self.legalMoves]
+        moves_to_consider = [(play, str(make_move(deepcopy(self.board), play, self.aiPlayer))) for play in self.legalMoves]
 
-        bestMove = moves_to_consider[0]
         for play, boardString in moves_to_consider:
-            print("wins: ", self.winCounter.get(boardString, 0))
-            print("plays: ", self.playCounter.get(boardString, 1))
+            print("Trimmed String: ", boardString.replace(" ", ""))
+            print("wins: ", self.winCounter.get(boardString))
+            print("plays: ", self.playCounter.get(boardString))
             print("pendingPlay: ", play)
 
         winPercentage, bestMove = max([ (self.winCounter.get(boardString, 0)/ self.playCounter.get(boardString, 1) , play) for play, boardString in moves_to_consider ])
+
         sys.exit(bestMove)
 
 # accepts the argv object and returns the relevant 3 values as a relevant type 
