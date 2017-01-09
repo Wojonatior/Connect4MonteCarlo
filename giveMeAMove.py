@@ -1,5 +1,7 @@
 import sys, argparse, ast
 
+#TODO Implement a timeout
+
 # accepts the argv object and returns the relevant 3 values as a relevant type 
 def parse_args(argv):
     parser = argparse.ArgumentParser()
@@ -50,6 +52,9 @@ def findWin(board):
             if board[y][x] == 2 and board[y-1][x-1] == 2 and board[y-2][x-2] == 2 and board[y-3][x-3] == 2:
                 return 2
     return 0
+
+def findLegalMoves(board):
+    return [index for index, value in enumerate(board[0]) if value == 0]
 
 def main(argv):
     board, player, msTime = parse_args(argv)

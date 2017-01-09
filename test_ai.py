@@ -7,15 +7,30 @@ def test_makes_a_move():
         giveMeAMove.main(baseInput)
 
 def test_find_no_winner():
-    emptyBoard = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]]
+    emptyBoard =  [[0,0,0,0,0,0,0]
+                  ,[0,0,0,0,0,0,0]
+                  ,[0,0,0,0,0,0,0]
+                  ,[0,0,0,0,0,0,0]
+                  ,[0,0,0,0,0,0,0]
+                  ,[0,0,0,0,0,0,0]]
     assert giveMeAMove.findWin(emptyBoard) == 0
 
 def test_find_horizontal_winner():
-    horizontalWinBoard = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,2,2,2,0],[0,0,0,1,1,1,1]]
+    horizontalWinBoard =   [[0,0,0,0,0,0,0]
+                           ,[0,0,0,0,0,0,0]
+                           ,[0,0,0,0,0,0,0]
+                           ,[0,0,0,0,0,0,0]
+                           ,[0,0,0,2,2,2,0]
+                           ,[0,0,0,1,1,1,1]]
     assert giveMeAMove.findWin(horizontalWinBoard) == 1
 
 def test_find_vertical_winner():
-    verticalWinBoard = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,1],[0,0,0,0,0,2,1],[0,0,0,0,0,2,1],[0,0,0,0,0,2,1]]
+    verticalWinBoard = [[0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,1],
+                        [0,0,0,0,0,2,1],
+                        [0,0,0,0,0,2,1],
+                        [0,0,0,0,0,2,1]]
     assert giveMeAMove.findWin(verticalWinBoard) == 1
 
 def test_find_right_diag_winner():
@@ -35,3 +50,30 @@ def test_find_left_diag_winner():
                       ,[0,0,0,2,2,1,0]
                       ,[0,0,0,2,2,2,1]]
     assert giveMeAMove.findWin(lDiagWinBoard) == 1
+
+def test_get_legal_plays():
+    openBoard = [[0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0]]
+
+    fullBoard = [[1,2,1,2,1,2,1],
+                 [1,2,1,2,1,2,1],
+                 [1,2,1,2,1,2,1],
+                 [1,2,1,2,1,2,1],
+                 [1,2,1,2,1,2,1],
+                 [1,2,1,2,1,2,1]]
+
+    sortaFullBoard = [[1,0,0,2,0,2,0],
+                      [1,0,0,2,0,2,0],
+                      [1,0,0,2,0,2,0],
+                      [1,0,0,2,0,2,0],
+                      [1,0,0,2,0,2,0],
+                      [1,0,0,2,0,2,0]]
+
+    assert giveMeAMove.findLegalMoves(openBoard) == [0,1,2,3,4,5,6]
+    assert giveMeAMove.findLegalMoves(fullBoard) == []
+    assert giveMeAMove.findLegalMoves(sortaFullBoard) == [1,2,4,6]
+
