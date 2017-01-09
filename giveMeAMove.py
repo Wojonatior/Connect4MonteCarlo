@@ -94,20 +94,22 @@ def findWin(board):
     # Checking for Horizontal
     for y in range(height):
         for x in range(width-3):
-            if board[y][x] == 1 and board[y][x+1] == 1 and board[y][x+2] == 1 and board[y][x+3] == 1:
-                # if board[y][x:x+4].count(1) == 4:
-                return 1
-            if board[y][x] == 2 and board[y][x+1] == 2 and board[y][x+2] == 2 and board[y][x+3] == 2:
-                # if board[y][x:x+4].count(2) == 4:
-                return 2
+            if not (board[y][3] == 0):
+                if board[y][x] == 1 and board[y][x+1] == 1 and board[y][x+2] == 1 and board[y][x+3] == 1:
+                    # if board[y][x:x+4].count(1) == 4:
+                    return 1
+                if board[y][x] == 2 and board[y][x+1] == 2 and board[y][x+2] == 2 and board[y][x+3] == 2:
+                    # if board[y][x:x+4].count(2) == 4:
+                    return 2
 
     # Checking for Vertical
     for x in range(width):
         for y in range(height-3):
-            if board[y][x] == 1 and board[y+1][x] == 1 and board[y+2][x] == 1 and board[y+3][x] == 1:
-                return 1
-            if board[y][x] == 2 and board[y+1][x] == 2 and board[y+2][x] == 2 and board[y+3][x] == 2:
-                return 2
+            if not (board[3][x] == 0):
+                if board[y][x] == 1 and board[y+1][x] == 1 and board[y+2][x] == 1 and board[y+3][x] == 1:
+                    return 1
+                if board[y][x] == 2 and board[y+1][x] == 2 and board[y+2][x] == 2 and board[y+3][x] == 2:
+                    return 2
     # Checking for Right Diagonal
     for y in range(height-1, height-3, -1):
         for x in range(width-3):
@@ -143,7 +145,7 @@ def findLegalMoves(board):
 
 def main(argv):
     board, player, msTime = parse_args(argv)
-    ai = MonteCarloAI(board, 50000, player, msTime - 1000)
+    ai = MonteCarloAI(board, 500000, player, msTime - 5000)
     ai.calculate_best_move()
 
 if __name__ == "__main__":
