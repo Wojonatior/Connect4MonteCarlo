@@ -1,6 +1,7 @@
 import sys, argparse, ast
 from threading import Timer
 from random import choice
+from copy import deepcopy
 #TODO Cull imports to just required functions
 
 class MonteCarloAI(object):
@@ -32,7 +33,7 @@ class MonteCarloAI(object):
 
     def simulate_one_game(self, board):
         visitedBoards = set()
-        simulatedBoard = board
+        simulatedBoard = deepcopy(board)
         playerToOptimize = self.aiPlayer
         noNewNodeAdded = True
         movingPlayer = playerToOptimize
@@ -54,7 +55,7 @@ class MonteCarloAI(object):
             # Flip the activePlayer and check for a win
             movingPlayer = 1 if movingPlayer == 2 else 2
             winningPlayer = findWin(simulatedBoard)
-            print(winningPlayer)
+        
         
         #TODO Check for non-strings being put into dicts and sets
         #Aggregate the results of the game into the 
@@ -94,7 +95,6 @@ def debug_output(valuesToPrint):
 
 #returns the player number if the board contains a winning player, 0 if no winner
 def findWin(board):
-    print(board)
     height = 6
     width = 7
     # Checking for Horizontal
