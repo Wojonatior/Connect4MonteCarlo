@@ -5,90 +5,91 @@ from random import choice
 from copy import deepcopy
 from time import time
 
-class MonteCarloAI(object):
-    def __init__(self, board, numGames, aiPlayer, timeout):
+class Monte_Carlo_AI(object):
+    def __init__(self, board, num_games, ai_player, timeout):
         self.board = board
-        self.numGames = numGames
-        self.aiPlayer = aiPlayer
+        self.num_games = num_games
+        self.ai_player = ai_player
         # timeout is assumed to be provided in MS
         self.timeout = timeout / 1000
-        self.legalMoves = findLegalMoves(self.board)
-        self.winCounter = {}
-        self.playCounter = {}
-        self.startTime = time()
+        self.legal_moves = find_legal_moves(self.board)
+        self.win_counter = {}
+        self.play_counter = {}
+        self.start_time = time()
 
     def calculate_best_move(self):
         #Bail out early here
-        if len(self.legalMoves) == 1:
-            exit(self.legalMoves[0])
-        
-        simulatedGames = 0
-        endTime = time() + self.timeout
+        if len(self.legal_moves) == 1:
+            exit(self.legal_moves[0])
 
-        while simulatedGames < self.numGames and time() < endTime:
+        simulated_games = 0
+        end_time = time() + self.timeout
+
+        while simulated_games < self.num_games and time() < end_time:
             self.simulate_one_game(self.board)
-            simulatedGames += 1
+            simulated_games += 1
 
         self.execute_best_move()
 
     def simulate_one_game(self, board):
-        visitedBoards = set()
-        simulatedBoard = deepcopy(board)
-        noNewNodeAdded = True
-        movingPlayer = self.aiPlayer
-        winningPlayer = 0
+        visited_boards = set()
+        simulated_board = deepcopy(board)
+        no_new_node_added = True
+        moving_player = self.ai_player
+        # 0 represents that no player is currently winning
+        winning_player = 0
 
         # Maximum number of moves is 42, so just play until there aren't moves left or someone wins
-        while not winningPlayer:
-            possibleMoves = findLegalMoves(simulatedBoard)
-            pendingMove = choice(possibleMoves)
-            simulatedBoard = make_move(simulatedBoard, pendingMove, movingPlayer)
-            strBoard = str(simulatedBoard)
+        while not winning_player:
+            possible_moves = find_legal_moves(simulated_board)
+            pending_move = choice(possible_moves)
+            simulated_board = make_move(simulated_board, pending_move, moving_player)
+            str_board = str(simulated_board)
 
-            if noNewNodeAdded and not (strBoard in self.playCounter):
-                noNewNodeAdded = False
-                self.playCounter[strBoard] = 0
-                self.winCounter[strBoard] = 0
+            if no_new_node_added and not (str_board in self.play_counter):
+                no_new_node_added = False
+                self.play_counter[str_board] = 0
+                self.win_counter[str_board] = 0
 
-            visitedBoards.add(strBoard)
-            # Flip the activePlayer and check for a win
-            movingPlayer = 1 if movingPlayer == 2 else 2
-            winningPlayer = findWin(simulatedBoard)
-        
-        
-        #Aggregate the results of the game into the playCounter and winCounter
-        for boardString in visitedBoards:
-            if boardString not in self.playCounter:
+            visited_boards.add(str_board)
+            # Flip the moving_player and check for a win
+
+            moving_player = 1 if moving_player == 2 else 2
+            winning_player = find_win(simulated_board)
+
+        #Aggregate the results of the game into the play_counter and win_counter
+        for board_string in visited_boards:
+            if board_string not in self.play_counter:
                 continue
-            self.playCounter[boardString] += 1
-            if self.aiPlayer == winningPlayer:
-                self.winCounter[boardString] += 1
+            self.play_counter[board_string] += 1
+            if self.ai_player == winning_player:
+                self.win_counter[board_string] += 1
 
 
     def execute_best_move(self):
         # Moves are in the form of (colToPlay, newBoardState)
-        moves_to_consider = [(play, str(make_move(deepcopy(self.board), play, self.aiPlayer))) for play in self.legalMoves]
+        moves_to_consider = [(play, str(make_move(deepcopy(self.board), play, self.ai_player))) for play in self.legal_moves]
 
-        winPercentage, bestMove = max([ (self.winCounter.get(boardString, 0)/ self.playCounter.get(boardString, 1) , play) for play, boardString in moves_to_consider ])
+        win_percentage, best_move = max([ (self.win_counter.get(board_string, 0)/ self.play_counter.get(board_string, 1) , play) for play, board_string in moves_to_consider ])
 
         print("\n")
         print("--------------------------------------------------------------------------------")
-        print(time()- self.startTime)
+        print(time()- self.start_time)
         print("--------------------------------------------------------------------------------")
-        exit(bestMove)
+        exit(best_move)
 
-# accepts the argv object and returns the relevant 3 values as a relevant type 
+# accepts the argv object and returns the 3 values as a relevant types
 def parse_args(argv):
     parser = ArgumentParser()
     parser.add_argument("-b")
     parser.add_argument("-p")
     parser.add_argument("-t")
     pargs = vars(parser.parse_args())
-    board, player, msTime = literal_eval(pargs["b"]), 1 if pargs["p"] == "player-one" else 2, int(pargs["t"])
-    return (board, player, msTime)
+    board, player, ms_time = literal_eval(pargs["b"]), 1 if pargs["p"] == "player-one" else 2, int(pargs["t"])
+    return (board, player, ms_time)
 
 #returns the player number if the board contains a winning player, 0 if no winner
-def findWin(board):
+def find_win(board):
     height = 6
     width = 7
     # Checking for Horizontal
@@ -96,10 +97,8 @@ def findWin(board):
         for x in range(width-3):
             if not (board[y][3] == 0):
                 if board[y][x] == 1 and board[y][x+1] == 1 and board[y][x+2] == 1 and board[y][x+3] == 1:
-                    # if board[y][x:x+4].count(1) == 4:
                     return 1
                 if board[y][x] == 2 and board[y][x+1] == 2 and board[y][x+2] == 2 and board[y][x+3] == 2:
-                    # if board[y][x:x+4].count(2) == 4:
                     return 2
 
     # Checking for Vertical
@@ -125,7 +124,7 @@ def findWin(board):
             if board[y][x] == 2 and board[y-1][x-1] == 2 and board[y-2][x-2] == 2 and board[y-3][x-3] == 2:
                 return 2
     # Checking for Tie
-    if len(findLegalMoves(board)) == 0:
+    if len(find_legal_moves(board)) == 0:
         return -1
     # No winner or tie
     return 0
@@ -140,12 +139,12 @@ def make_move(board, column, player):
             row -= 1
     return False
 
-def findLegalMoves(board):
+def find_legal_moves(board):
     return [index for index, value in enumerate(board[0]) if value == 0]
 
 def main(argv):
-    board, player, msTime = parse_args(argv)
-    ai = MonteCarloAI(board, 500000, player, msTime - 5000)
+    board, player, ms_time = parse_args(argv)
+    ai = Monte_Carlo_AI(board, 500000, player, ms_time - 5000)
     ai.calculate_best_move()
 
 if __name__ == "__main__":
