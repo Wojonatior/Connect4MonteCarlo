@@ -1,6 +1,80 @@
 import sys, argparse, ast
+from threading import Timer
+from random import choice
+#TODO Cull imports to just required functions
 
-#TODO Implement a timeout
+class MonteCarloAI(object):
+    def __init__(self, board, numGames, aiPlayer, timeout):
+        self.board = board
+        self.numGames = numGames
+        self.aiPlayer = aiPlayer
+        # timeout is assumed to be provided in MS
+        self.timeout = timeout / 1000
+        self.legalMoves = findLegalMoves(self.board)
+        self.winCounter = {}
+        self.playCounter = {}
+        self.plays = {}
+
+    def calculate_best_move(self):
+        legal = findLegalMoves(self.board)
+        #Bail out early here
+        
+        simulatedGames = 0
+        move_timeout = Timer(self.timeout, self.execute_best_move)
+        move_timeout.start()
+
+        while True:
+            self.simulate_one_game(self.board)
+            simulatedGames += 1
+            if simulatedGames == self.numGames:
+                self.execute_best_move()
+
+
+    def simulate_one_game(self, board):
+        visitedBoards = set()
+        simulatedBoard = board
+        playerToOptimize = self.aiPlayer
+        noNewNodeAdded = True
+        movingPlayer = playerToOptimize
+        winningPlayer = 0
+
+        # Maximum number of moves is 42, so just play util there aren't moves left
+        while not winningPlayer:
+            possibleMoves = findLegalMoves(simulatedBoard)
+            pendingMove = choice(possibleMoves)
+            simulatedBoard = make_move(simulatedBoard, pendingMove, movingPlayer)
+            strBoard = str(simulatedBoard)
+
+            if noNewNodeAdded and strBoard not in self.playCounter:
+                noNewNodeAdded = False
+                self.playCounter[strBoard] = 0
+                self.winCounter[strBoard] = 0
+
+            visitedBoards.add(strBoard)
+            # Flip the activePlayer and check for a win
+            movingPlayer = 1 if movingPlayer == 2 else 2
+            winningPlayer = findWin(simulatedBoard)
+            print(winningPlayer)
+        
+        #TODO Check for non-strings being put into dicts and sets
+        #Aggregate the results of the game into the 
+        for strBoard in visitedBoards:
+            if strBoard in self.plays:
+                self.playCounter[strBoard] += 1
+                if player == winner:
+                    self.winCounter += 1
+
+
+    def execute_best_move(self):
+        # Moves are in the form of (colToPlay, newBoardState)
+        moves_to_consider = [(play, str(make_move(self.board, play, self.aiPlayer))) for play in self.legalMoves]
+
+        bestMove = moves_to_consider[0]
+
+        winPercentage, bestMove = max([ 
+            (self.winCounter.get(boardString, 0) / self.playCounter.get(boardString, 1), play) for play, boardString in moves_to_consider
+        ])
+        sys.exit(bestMove)
 
 # accepts the argv object and returns the relevant 3 values as a relevant type 
 def parse_args(argv):
@@ -20,6 +94,7 @@ def debug_output(valuesToPrint):
 
 #returns the player number if the board contains a winning player, 0 if no winner
 def findWin(board):
+    print(board)
     height = 6
     width = 7
     # Checking for Horizontal
@@ -51,18 +126,29 @@ def findWin(board):
                 return 1
             if board[y][x] == 2 and board[y-1][x-1] == 2 and board[y-2][x-2] == 2 and board[y-3][x-3] == 2:
                 return 2
+    # Checking for Tie
+    if len(findLegalMoves(board)) == 0:
+        return -1
+    # No winner or tie
     return 0
+
+def make_move(board, column, player):
+    row = 5
+    while row >= 0:
+        if board[row][column] == 0:
+            board[row][column] = player
+            return board
+        else:
+            row -= 1
+    return False
 
 def findLegalMoves(board):
     return [index for index, value in enumerate(board[0]) if value == 0]
 
 def main(argv):
     board, player, msTime = parse_args(argv)
-    debug_output([board, type(board), player, msTime])
-    sys.exit(4)
+    ai = MonteCarloAI(board, 1000, player, msTime - 1000)
+    ai.calculate_best_move()
 
 if __name__ == "__main__":
-    print(sys.argv)
     main(sys.argv)
-
-    
