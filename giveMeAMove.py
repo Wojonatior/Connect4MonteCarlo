@@ -59,11 +59,12 @@ class MonteCarloAI(object):
         
         #TODO Check for non-strings being put into dicts and sets
         #Aggregate the results of the game into the 
-        for strBoard in visitedBoards:
-            if strBoard in self.plays:
-                self.playCounter[strBoard] += 1
-                if player == winner:
-                    self.winCounter += 1
+        for boardString in visitedBoards:
+            if boardString not in self.playCounter:
+                continue
+            self.playCounter[boardString] += 1
+            if self.aiPlayer == winningPlayer:
+                self.winCounter[boardString] += 1
 
 
     def execute_best_move(self):
@@ -71,10 +72,12 @@ class MonteCarloAI(object):
         moves_to_consider = [(play, str(make_move(self.board, play, self.aiPlayer))) for play in self.legalMoves]
 
         bestMove = moves_to_consider[0]
+        for play, boardString in moves_to_consider:
+            print("wins: ", self.winCounter.get(boardString, 0))
+            print("plays: ", self.playCounter.get(boardString, 1))
+            print("pendingPlay: ", play)
 
-        winPercentage, bestMove = max([ 
-            (self.winCounter.get(boardString, 0) / self.playCounter.get(boardString, 1), play) for play, boardString in moves_to_consider
-        ])
+        winPercentage, bestMove = max([ (self.winCounter.get(boardString, 0)/ self.playCounter.get(boardString, 1) , play) for play, boardString in moves_to_consider ])
         sys.exit(bestMove)
 
 # accepts the argv object and returns the relevant 3 values as a relevant type 
