@@ -103,15 +103,35 @@ def generate_bitboard(two_dim_board):
 
     return (int(p1_bstring, 2), int(p2_bstring, 2))
 
-# accepts the argv object and returns the 3 values as a relevant types
-def parse_args(argv):
-    parser = ArgumentParser()
-    parser.add_argument("-b")
-    parser.add_argument("-p")
-    parser.add_argument("-t")
-    pargs = vars(parser.parse_args())
-    board, player, ms_time = literal_eval(pargs["b"]), 1 if pargs["p"] == "player-one" else 2, int(pargs["t"])
-    return (board, player, ms_time)
+def check_one_bitboard(bitboard):
+    # Check \.
+    temp_bboard = bitboard & (bitboard >> 6)
+    if(temp_bboard & (temp_bboard >> 2 * 6)):
+        return True
+    # Check -
+    temp_bboard = bitboard & (bitboard >> 7)
+    if(temp_bboard & (temp_bboard >> 2 * 7)):
+        return True
+    # Check /
+    temp_bboard = bitboard & (bitboard >> 8)
+    if(temp_bboard & (temp_bboard >> 2 * 8)):
+        return True
+    # Check |
+    temp_bboard = bitboard & (bitboard >> 1)
+    if(temp_bboard & (temp_bboard >> 2 * 1)):
+        return True
+    
+def find_bb_win(board):
+    p1_bitboard, p2_bitboard = generate_bitboard(board)
+    if check_one_bitboard(p1_bitboard):
+        return 1
+    elif check_one_bitboard(p1_bitboard):
+        return 2
+    else:
+        if len(find_legal_moves(board)) == 0:
+            return -1
+        else:
+            return 0
 
 #returns the player number if the board contains a winning player, 0 if no winner
 def find_win(board):
@@ -166,6 +186,16 @@ def make_move(board, column, player):
 
 def find_legal_moves(board):
     return [index for index, value in enumerate(board[0]) if value == 0]
+
+# accepts the argv object and returns the 3 values as a relevant types
+def parse_args(argv):
+    parser = ArgumentParser()
+    parser.add_argument("-b")
+    parser.add_argument("-p")
+    parser.add_argument("-t")
+    pargs = vars(parser.parse_args())
+    board, player, ms_time = literal_eval(pargs["b"]), 1 if pargs["p"] == "player-one" else 2, int(pargs["t"])
+    return (board, player, ms_time)
 
 def main(argv):
     board, player, ms_time = parse_args(argv)
