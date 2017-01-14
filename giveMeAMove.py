@@ -22,12 +22,12 @@ class Monte_Carlo_AI(object):
         if len(self.legal_moves) == 1:
             exit(self.legal_moves[0])
 
-        simulated_games = 0
+        self.simulated_games = 0
         end_time = time() + self.timeout
 
-        while simulated_games < self.num_games and time() < end_time:
+        while self.simulated_games < self.num_games and time() < end_time:
             self.simulate_one_game(self.board)
-            simulated_games += 1
+            self.simulated_games += 1
 
         self.execute_best_move()
 
@@ -65,7 +65,6 @@ class Monte_Carlo_AI(object):
             if self.ai_player == winning_player:
                 self.win_counter[board_string] += 1
 
-
     def execute_best_move(self):
         # Moves are in the form of (colToPlay, newBoardState)
         moves_to_consider = [(play, str(make_move(deepcopy(self.board), play, self.ai_player))) for play in self.legal_moves]
@@ -74,9 +73,35 @@ class Monte_Carlo_AI(object):
 
         print("\n")
         print("--------------------------------------------------------------------------------")
-        print(time()- self.start_time)
+        print("Seconds: ", time()- self.start_time)
+        print("Moves: ", self.simulated_games)
         print("--------------------------------------------------------------------------------")
         exit(best_move)
+
+def generate_bitboard(two_dim_board):
+    p1_bboard = list(49 * "0")
+    p2_bboard = list(49 * "0")
+    bit_index = 47
+
+    for x in range(7)[::-1]:
+        for y in range(6):
+            if two_dim_board[y][x] == 1:
+                p1_bboard[bit_index] = "1"
+                p2_bboard[bit_index] = "0"
+            elif two_dim_board[y][x] == 2:
+                p1_bboard[bit_index] = "0"
+                p2_bboard[bit_index] = "1"
+            else:
+                p1_bboard[bit_index] = "0"
+                p2_bboard[bit_index] = "0"
+            bit_index -= 1
+        # This is to generate the empty row at the "top" of the bitboard
+        bit_index -= 1
+    print(p1_bboard)
+    p1_bstring = "".join(p1_bboard)
+    p2_bstring = "".join(p2_bboard)
+
+    return (int(p1_bstring, 2), int(p2_bstring, 2))
 
 # accepts the argv object and returns the 3 values as a relevant types
 def parse_args(argv):
