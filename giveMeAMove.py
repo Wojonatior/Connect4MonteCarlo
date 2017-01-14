@@ -55,7 +55,7 @@ class Monte_Carlo_AI(object):
             # Flip the moving_player and check for a win
 
             moving_player = 1 if moving_player == 2 else 2
-            winning_player = find_win(simulated_board)
+            winning_player = find_bb_win(simulated_board)
 
         #Aggregate the results of the game into the play_counter and win_counter
         for board_string in visited_boards:
@@ -79,25 +79,19 @@ class Monte_Carlo_AI(object):
         exit(best_move)
 
 def generate_bitboard(two_dim_board):
-    p1_bboard = list(49 * "0")
-    p2_bboard = list(49 * "0")
+    p1_bboard = 49 * ["0"]
+    p2_bboard = 49 * ["0"]
     bit_index = 47
 
     for x in range(7)[::-1]:
         for y in range(6):
             if two_dim_board[y][x] == 1:
                 p1_bboard[bit_index] = "1"
-                p2_bboard[bit_index] = "0"
             elif two_dim_board[y][x] == 2:
-                p1_bboard[bit_index] = "0"
                 p2_bboard[bit_index] = "1"
-            else:
-                p1_bboard[bit_index] = "0"
-                p2_bboard[bit_index] = "0"
             bit_index -= 1
         # This is to generate the empty row at the "top" of the bitboard
         bit_index -= 1
-    print(p1_bboard)
     p1_bstring = "".join(p1_bboard)
     p2_bstring = "".join(p2_bboard)
 
@@ -132,47 +126,6 @@ def find_bb_win(board):
             return -1
         else:
             return 0
-
-#returns the player number if the board contains a winning player, 0 if no winner
-def find_win(board):
-    height = 6
-    width = 7
-    # Checking for Horizontal
-    for y in range(height):
-        for x in range(width-3):
-            if not (board[y][3] == 0):
-                if board[y][x] == 1 and board[y][x+1] == 1 and board[y][x+2] == 1 and board[y][x+3] == 1:
-                    return 1
-                if board[y][x] == 2 and board[y][x+1] == 2 and board[y][x+2] == 2 and board[y][x+3] == 2:
-                    return 2
-
-    # Checking for Vertical
-    for x in range(width):
-        for y in range(height-3):
-            if not (board[3][x] == 0):
-                if board[y][x] == 1 and board[y+1][x] == 1 and board[y+2][x] == 1 and board[y+3][x] == 1:
-                    return 1
-                if board[y][x] == 2 and board[y+1][x] == 2 and board[y+2][x] == 2 and board[y+3][x] == 2:
-                    return 2
-    # Checking for Right Diagonal
-    for y in range(height-1, height-3, -1):
-        for x in range(width-3):
-            if board[y][x] == 1 and board[y-1][x+1] == 1 and board[y-2][x+2] == 1 and board[y-3][x+3] == 1:
-                return 1
-            if board[y][x] == 2 and board[y-1][x+1] == 2 and board[y-2][x+2] == 2 and board[y-3][x+3] == 2:
-                return 2
-    # Checking for Left Diagonal
-    for y in range(height-1, height-3, -1):
-        for x in range(width-1, width-3, -1):
-            if board[y][x] == 1 and board[y-1][x-1] == 1 and board[y-2][x-2] == 1 and board[y-3][x-3] == 1:
-                return 1
-            if board[y][x] == 2 and board[y-1][x-1] == 2 and board[y-2][x-2] == 2 and board[y-3][x-3] == 2:
-                return 2
-    # Checking for Tie
-    if len(find_legal_moves(board)) == 0:
-        return -1
-    # No winner or tie
-    return 0
 
 def make_move(board, column, player):
     row = 5
