@@ -7,6 +7,7 @@ from time import time
 
 class Monte_Carlo_AI(object):
     def __init__(self, board, num_games, ai_player, timeout):
+        # Init the overall game state
         self.board = board
         self.num_games = num_games
         self.ai_player = ai_player
@@ -73,7 +74,7 @@ class Monte_Carlo_AI(object):
 
         print("\n")
         print("--------------------------------------------------------------------------------")
-        print("Seconds: ", time()- self.start_time)
+        print("Seconds: ", time() - self.start_time)
         print("Moves: ", self.simulated_games)
         print("--------------------------------------------------------------------------------")
         exit(best_move)
@@ -98,7 +99,7 @@ def generate_bitboard(two_dim_board):
     return (int(p1_bstring, 2), int(p2_bstring, 2))
 
 def check_one_bitboard(bitboard):
-    # Check \.
+    # Check \
     temp_bboard = bitboard & (bitboard >> 6)
     if(temp_bboard & (temp_bboard >> 2 * 6)):
         return True
