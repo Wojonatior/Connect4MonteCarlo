@@ -13,7 +13,6 @@ def test_find_no_winner():
                  ,[0,0,0,0,0,0,0]
                  ,[0,0,0,0,0,0,0]
                  ,[0,0,0,0,0,0,0]]
-    assert giveMeAMove.find_win(empty_board) == 0
     assert giveMeAMove.find_bb_win(empty_board) == 0
 
 def test_find_tie():
@@ -23,7 +22,6 @@ def test_find_tie():
                 [2,2,2,1,2,2,2],
                 [1,1,1,2,1,1,1],
                 [2,2,2,1,2,2,2]]
-    assert giveMeAMove.find_win(tie_board) == -1
     assert giveMeAMove.find_bb_win(tie_board) == -1
 
 def test_find_horizontal_winner():
@@ -33,7 +31,6 @@ def test_find_horizontal_winner():
                            ,[0,0,0,0,0,0,0]
                            ,[0,0,0,2,2,2,0]
                            ,[0,0,0,1,1,1,1]]
-    assert giveMeAMove.find_win(horizontal_win_board) == 1
     assert giveMeAMove.find_bb_win(horizontal_win_board) == 1
 
 def test_find_vertical_winner():
@@ -43,7 +40,6 @@ def test_find_vertical_winner():
                         [0,0,0,0,0,2,1],
                         [0,0,0,0,0,2,1],
                         [0,0,0,0,0,2,1]]
-    assert giveMeAMove.find_win(vertical_win_board) == 1
     assert giveMeAMove.find_bb_win(vertical_win_board) == 1
 
 def test_find_right_diag_winner():
@@ -53,7 +49,6 @@ def test_find_right_diag_winner():
                       ,[0,0,1,2,0,0,0]
                       ,[0,1,2,2,0,0,0]
                       ,[1,2,2,2,0,0,0]]
-    assert giveMeAMove.find_win(r_diag_win_board) == 1
     assert giveMeAMove.find_bb_win(r_diag_win_board) == 1
 
 def test_find_left_diag_winner():
@@ -63,7 +58,6 @@ def test_find_left_diag_winner():
                       ,[0,0,0,2,1,0,0]
                       ,[0,0,0,2,2,1,0]
                       ,[0,0,0,2,2,2,1]]
-    assert giveMeAMove.find_win(l_diag_win_board) == 1
     assert giveMeAMove.find_bb_win(l_diag_win_board) == 1
 
 def test_get_legal_plays():
@@ -118,4 +112,4 @@ def test_make_invalid_move():
 
 def test_why_is_this_not_winning():
     sample_board = [[1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1], [1, 2, 2, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1], [2, 1, 2, 2, 1, 1, 1], [2, 1, 2, 2, 1, 1, 2]]
-    assert giveMeAMove.find_win(sample_board) == 1
+    assert giveMeAMove.find_bb_win(sample_board) == 1
